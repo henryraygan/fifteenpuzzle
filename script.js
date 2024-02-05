@@ -9,7 +9,8 @@ document.addEventListener("DOMContentLoaded", function () {
   let emptyCellIndex;
   let startTime;
   let timerInterval;
-  let savedGames = JSON.parse(localStorage.getItem("savedGames")) || [];
+  let savedSessions = JSON.parse(localStorage.getItem("savedSessions")) || [];
+  let victories = JSON.parse(localStorage.getItem("victories")) || [];
   let paused = false;
 
   // Función para iniciar el juego
@@ -99,55 +100,36 @@ document.addEventListener("DOMContentLoaded", function () {
     clearInterval(timerInterval);
   }
 
-  // Función para actualizar el temporizador
-  function updateTimer() {
-    const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-    const minutes = Math.floor(elapsedTime / 60);
-    const seconds = elapsedTime % 60;
-    timerDisplay.textContent = `${minutes.toString().padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")}`;
-  }
-
   // Función para guardar la puntuación de la partida completada
-  function saveScore(round, gameDuration, startTime) {
-    if (gameDuration && startTime) {
-      // Si se proporciona la duración del juego y el tiempo de inicio, es una partida completada
-      savedGames.push({
-        round,
-        gameDuration,
-        startTime,
-        cellOrder: Array.from(cells).map((cell) => cell.textContent),
-      });
-    } else {
-      // Si no se proporcionan gameDuration y startTime, es solo una partida guardada
-      savedGames.push({
-        round,
-      });
-    }
-    localStorage.setItem("savedGames", JSON.stringify(savedGames));
+  function saveScore(gameDuration) {
+    victories.push({
+      gameDuration,
+      cellOrder: Array.from(cells).map((cell) => cell.textContent),
+    });
+    localStorage.setItem("victories", JSON.stringify(victories));
   }
 
   // Función para guardar la partida actual
   function saveGame() {
     stopTimer();
     const gameDuration = timerDisplay.textContent;
-    const round = `Partida ${savedGames.length + 1}`;
-    const startTime =
-      Date.now() -
-      (parseInt(gameDuration.split(":")[0]) * 60 +
-        parseInt(gameDuration.split(":")[1])) *
-        1000;
+    if (gameDuration) {
+      // Guardar el orden de las celdas
+      const cellOrder = [];
+      cells.forEach((cell) => {
+        cellOrder.push(cell.textContent);
+      });
 
-    // Guardar el orden de las celdas
-    const cellOrder = [];
-    cells.forEach((cell) => {
-      cellOrder.push(cell.textContent);
-    });
-
-    saveScore(round, gameDuration, startTime, cellOrder);
-    alert("Partida guardada correctamente.");
-    loadSavedGames();
+      savedSessions.push({
+        gameDuration,
+        cellOrder,
+      });
+      localStorage.setItem("savedSessions", JSON.stringify(savedSessions));
+      alert("Partida guardada correctamente.");
+      loadSavedGames();
+    } else {
+      alert("No se puede guardar la partida antes de completarla.");
+    }
   }
 
   // Función para pausar el juego
@@ -185,23 +167,20 @@ document.addEventListener("DOMContentLoaded", function () {
   function loadSavedGames() {
     savedGamesSelect.innerHTML =
       '<option value="">Selecciona una partida guardada</option>';
-    savedGames.forEach((game, index) => {
-      if (game.gameDuration && game.startTime) {
-        // Si es una partida completada, mostrar en una lista separada
-        const option = document.createElement("option");
-        option.value = index.toString();
-        option.textContent = `Partida completada - ${game.round} - ${game.gameDuration}`;
-        savedGamesSelect.appendChild(option);
-      }
+    const completedGamesList = document.getElementById("completedGamesList");
+    completedGamesList.innerHTML = ""; // Limpiar la lista de partidas completadas
+
+    savedSessions.forEach((game, index) => {
+      const option = document.createElement("option");
+      option.value = index.toString();
+      option.textContent = `Partida guardada - ${game.gameDuration}`;
+      savedGamesSelect.appendChild(option);
     });
-    // Mostrar las partidas guardadas en el mismo select
-    savedGames.forEach((game, index) => {
-      if (!game.gameDuration || !game.startTime) {
-        const option = document.createElement("option");
-        option.value = index.toString();
-        option.textContent = `Partida guardada - ${game.round}`;
-        savedGamesSelect.appendChild(option);
-      }
+
+    victories.forEach((game, index) => {
+      const listItem = document.createElement("li");
+      listItem.textContent = `Partida completada - Duración: ${game.gameDuration}`;
+      completedGamesList.appendChild(listItem);
     });
   }
 
@@ -220,13 +199,12 @@ document.addEventListener("DOMContentLoaded", function () {
   // Evento change en el select para cargar la partida seleccionada
   savedGamesSelect.addEventListener("change", function () {
     const selectedIndex = parseInt(savedGamesSelect.value);
-    console.log(selectedIndex);
     if (
       !isNaN(selectedIndex) &&
       selectedIndex >= 0 &&
-      selectedIndex < savedGames.length
+      selectedIndex < savedSessions.length
     ) {
-      loadSavedGame(savedGames[selectedIndex]);
+      loadSavedGame(savedSessions[selectedIndex]);
     }
   });
 

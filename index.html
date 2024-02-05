@@ -12,41 +12,49 @@
 <body>
 
 
-    <main class="game-board">
-        <div class="game-actions">
-            <button class="button" id="startButton">Iniciar Juego</button>
-            <button class="button" id="pauseButton" disabled>Pausar</button>
-            <button class="button" id="saveGameButton" disabled>Guardar Partida</button>
-        </div>
-        <div class="grid">
-            <div class="cell">1</div>
-            <div class="cell">2</div>
-            <div class="cell">3</div>
-            <div class="cell">4</div>
-            <div class="cell">5</div>
-            <div class="cell">6</div>
-            <div class="cell">7</div>
-            <div class="cell">8</div>
-            <div class="cell">9</div>
-            <div class="cell">10</div>
-            <div class="cell">11</div>
-            <div class="cell">12</div>
-            <div class="cell">13</div>
-            <div class="cell">14</div>
-            <div class="cell">15</div>
-            <div class="cell empty"></div>
-        </div>
-        <div class="game-history">
-            <div>
-                <h2>Tiempo transcurrido: <span id="timer">00:00</span></h2>
-                <h2>Historial de Partidas</h2>
-                <select class="button" id="savedGamesSelect">
-                    <option value="">Selecciona una partida guardada</option>
-                </select>
+    <main class="game">
+        <div class="game-canvas">
+            <div class="grid box-shadow">
+                <div class="cell">1</div>
+                <div class="cell">2</div>
+                <div class="cell">3</div>
+                <div class="cell">4</div>
+                <div class="cell">5</div>
+                <div class="cell">6</div>
+                <div class="cell">7</div>
+                <div class="cell">8</div>
+                <div class="cell">9</div>
+                <div class="cell">10</div>
+                <div class="cell">11</div>
+                <div class="cell">12</div>
+                <div class="cell">13</div>
+                <div class="cell">14</div>
+                <div class="cell">15</div>
+                <div class="cell empty"></div>
+            </div>
+            <div class="game-sidebar box-shadow">
+                <div class="game-controls">
+                    <h2 class="game-controls--timer">Tiempo transcurrido: <span id="timer">00:00</span></h2>
+                    <button class="button game-controls--button game-controls--start" id="startButton">Iniciar
+                        Juego</button>
+                    <button class="button game-controls--button game-controls--pause" id="pauseButton"
+                        disabled>Pausar</button>
+                    <button class="button game-controls--button game-controls--save" id="saveGameButton"
+                        disabled>Guardar Partida</button>
+                    <select class="button game-controls--button game-controls--saved-list" id="savedGamesSelect">
+                        <option value="">Partidas guardadas</option>
+                    </select>
+                </div>
+                <div class="game-history">
+                    <div>
+                        <h2>Historial de Partidas</h2>
+                        <ul class="game-history__list" id="completedGamesList"></ul>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
-    <!-- <script src="script.js"></script> -->
+    <script src="script.js"></script>
 </body>
 
 </html>
