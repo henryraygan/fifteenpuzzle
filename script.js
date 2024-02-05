@@ -55,9 +55,13 @@ document.addEventListener("DOMContentLoaded", function () {
       // Movimiento válido
       cells[emptyCellIndex].textContent = event.target.textContent;
       cells[emptyCellIndex].classList.remove("empty");
+      cells[emptyCellIndex].classList.add("moving"); // Agregamos una clase "moving" temporalmente
       event.target.textContent = "";
       event.target.classList.add("empty");
       emptyCellIndex = clickedIndex;
+      setTimeout(() => {
+        cells[emptyCellIndex].classList.remove("moving");
+      }, 100);
 
       if (!paused && checkWin()) {
         stopTimer();

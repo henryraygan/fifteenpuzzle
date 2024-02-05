@@ -59,11 +59,15 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: all 0.3s ease;
 }
 
 .empty {
   background-color: transparent;
   border: none;
+}
+.cell.moving {
+  transition: all 0.3s ease;
 }
 
 .button {
